@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "downlevelIteration": true,
+    "importHelpers": false,
+    "resolveJsonModule": true,
+    "composite": true,
+    "skipLibCheck": true,
+    "noImplicitOverride": true,
+    "allowArbitraryExtensions": true,
+
+    // lib
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "./dist",
+
+    // strictness
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUncheckedIndexedAccess": true
+  },
+  "include": ["src", "contracts/**/*.json"],
+  "exclude": ["node_modules", "dist", "no-commit", "trash"]
+}
