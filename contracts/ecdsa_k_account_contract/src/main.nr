@@ -2,17 +2,14 @@
 // The signing key is stored in an immutable private note and should be different from the signing key.
 use dep::aztec::macros::aztec;
 
-// VERSION=0.76.1 aztec-nargo compile
-// rm codegenCache.json && VERSION=0.76.1 aztec codegen ./ -o ../../artifacts
+// VERSION=0.81.0 aztec-nargo compile
+// rm codegenCache.json && VERSION=0.81.0 aztec codegen ./ -o ../../artifacts
 
 #[aztec]
 pub contract EcdsaKAccount {
     use dep::aztec::{
         encrypted_logs::log_assembly_strategies::default_aes128::note::encode_and_encrypt_note,
-        macros::{
-            functions::{initializer, internal, noinitcheck, private, public, view},
-            storage::storage,
-        },
+        macros::{functions::{initializer, noinitcheck, private, public, internal, view}, storage::storage},
         oracle::debug_log::debug_log,
     };
     use dep::aztec::prelude::{PrivateContext, PrivateImmutable};
@@ -20,7 +17,7 @@ pub contract EcdsaKAccount {
     use dep::authwit::{
         account::AccountActions,
         auth_witness::get_auth_witness,
-        entrypoint::{app::AppPayload, fee::FeePayload},
+        entrypoint::{app::AppPayload, fee::FeePayload}
     };
 
     use dep::ecdsa_public_key_note::EcdsaPublicKeyNote;
@@ -35,9 +32,9 @@ pub contract EcdsaKAccount {
     #[initializer]
     fn constructor(signing_pub_key_x: [u8; 32], signing_pub_key_y: [u8; 32]) {
         let this = context.this_address();
-        let mut pub_key_note = EcdsaPublicKeyNote::new(signing_pub_key_x, signing_pub_key_y, this);
+        let pub_key_note = EcdsaPublicKeyNote::new(signing_pub_key_x, signing_pub_key_y, this);
 
-        storage.public_key.initialize(&mut pub_key_note).emit(encode_and_encrypt_note(
+        storage.public_key.initialize(pub_key_note).emit(encode_and_encrypt_note(
             &mut context,
             this,
             this,

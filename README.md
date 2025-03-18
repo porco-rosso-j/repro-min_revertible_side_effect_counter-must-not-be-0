@@ -1,69 +1,56 @@
-## `min_revertible_side_effect_counter must not be 0` reproduction
-
-This error happens when the account contract is deployed in the following way:
-
-1. `construcotr` calls a public internal method.
-2. account is deployed using `DefaultMultiCallEntryPoint` using account manager.
-
-Note this doesn't occur if you deploy the account using another deployed account as deployer, e.g. test shcnorr account in sandbox.
-
-### Reproduction steps
-
-1. Run `pnpm i`
-2. Run `pnpm test`
+`No bytecode found at` error with v0.81.0
 
 ### Logs
-
-test log
-
-```bash
- FAIL  test/test.test.ts > E2E Batcher setup > should successfully deploy ecdsa k account
-Error: Error 500 from server http://localhost:8080 on pxe_simulateTx: Circuit execution failed: min_revertible_side_effect_counter must not be 0
- ❯ defaultFetch node_modules/.pnpm/@aztec+foundation@0.76.1/node_modules/@aztec/foundation/src/json-rpc/client/fetch.ts:63:13
- ❯ retry node_modules/.pnpm/@aztec+foundation@0.76.1/node_modules/@aztec/foundation/src/retry/index.ts:57:14
- ❯ node_modules/.pnpm/@aztec+foundation@0.76.1/node_modules/@aztec/foundation/src/json-rpc/client/fetch.ts:86:12
- ❯ request node_modules/.pnpm/@aztec+foundation@0.76.1/node_modules/@aztec/foundation/src/json-rpc/client/safe_json_rpc_client.ts:45:35
- ❯ DeployAccountMethod.proveInternal node_modules/.pnpm/@aztec+aztec.js@0.76.1_typescript@5.8.2_zod@3.24.2/node_modules/@aztec/aztec.js/src/contract/base_contract_interaction.ts:53:32
- ❯ node_modules/.pnpm/@aztec+aztec.js@0.76.1_typescript@5.8.2_zod@3.24.2/node_modules/@aztec/aztec.js/src/contract/base_contract_interaction.ts:82:31
- ❯ DeployAccountSentTx.waitForReceipt node_modules/.pnpm/@aztec+aztec.js@0.76.1_typescript@5.8.2_zod@3.24.2/node_modules/@aztec/aztec.js/src/contract/sent_tx.ts:100:20
- ❯ DeployAccountSentTx.wait node_modules/.pnpm/@aztec+aztec.js@0.76.1_typescript@5.8.2_zod@3.24.2/node_modules/@aztec/aztec.js/src/contract/sent_tx.ts:67:21
- ❯ DeployAccountSentTx.wait node_modules/.pnpm/@aztec+aztec.js@0.76.1_typescript@5.8.2_zod@3.24.2/node_modules/@aztec/aztec.js/src/account_manager/deploy_account_sent_tx.ts:37:21
-```
 
 sandbox log
 
 ```bash
-aztec-1     | [13:56:43.374] INFO: aztecjs:utils:watcher Slot 467 was missed, jumped to next slot
-aztec-1     | [13:56:45.372] INFO: pxe:service Simulating transaction execution request to 0xea92cc40 at 0x0000000000000000000000000000000000000000000000000000000000000004 {"origin":"0x0000000000000000000000000000000000000000000000000000000000000004","functionSelector":"0xea92cc40","simulatePublic":true,"chainId":"0x0000000000000000000000000000000000000000000000000000000000007a69","version":"0x0000000000000000000000000000000000000000000000000000000000000001","authWitnesses":[]}
-aztec-1     | [13:56:45.789] ERROR: pxe:service Error: Error: Circuit execution failed: min_revertible_side_effect_counter must not be 0
-aztec-1     |     at module.exports.__wbg_constructor_a10f2b77c63b8d5e (/usr/src/noir/packages/acvm_js/nodejs/acvm_js.js:646:17)
-aztec-1     |     at acvm_js::js_execution_error::JsExecutionError::new::ha17452420ab10d5c (wasm://wasm/009399f2:wasm-function[653]:0x123731)
-aztec-1     |     at acvm_js::execute::ProgramExecutor<B>::execute_circuit::{{closure}}::hee8c002e0b28ffa8 (wasm://wasm/009399f2:wasm-function[89]:0x60dc9)
-aztec-1     |     at acvm_js::execute::execute_program_with_native_program_and_return::{{closure}}::hd6b43ec46240ad05 (wasm://wasm/009399f2:wasm-function[364]:0xeca50)
-aztec-1     |     at acvm_js::execute::execute_program_with_native_type_return::{{closure}}::h52c71f27836bbfce (wasm://wasm/009399f2:wasm-function[561]:0x1154dc)
-aztec-1     |     at wasm_bindgen_futures::future_to_promise::{{closure}}::{{closure}}::h2e063ef25d237c8d (wasm://wasm/009399f2:wasm-function[295]:0xd781f)
-aztec-1     |     at wasm_bindgen_futures::queue::Queue::new::{{closure}}::hc9750bc69f09fd8d (wasm://wasm/009399f2:wasm-function[729]:0x12df31)
-aztec-1     |     at wasm_bindgen::convert::closures::invoke1_mut::h6c5376bbe1ce2f74 (wasm://wasm/009399f2:wasm-function[2355]:0x180305)
-aztec-1     |     at __wbg_adapter_22 (/usr/src/noir/packages/acvm_js/nodejs/acvm_js.js:220:10)
-aztec-1     |     at real (/usr/src/noir/packages/acvm_js/nodejs/acvm_js.js:205:20) {
-aztec-1     |   callStack: [ '0.1795', '0.7312', '0.16588' ],
-aztec-1     |   rawAssertionPayload: { selector: '10529075911881641908', data: [] },
-aztec-1     |   brilligFunctionId: 0
-aztec-1     | }
-aztec-1     | [13:56:45.789] WARN: cli Error in JSON RPC server call pxe_simulateTx: Error: Circuit execution failed: min_revertible_side_effect_counter must not be 0
-aztec-1     |     at module.exports.__wbg_constructor_a10f2b77c63b8d5e (/usr/src/noir/packages/acvm_js/nodejs/acvm_js.js:646:17)
-aztec-1     |     at acvm_js::js_execution_error::JsExecutionError::new::ha17452420ab10d5c (wasm://wasm/009399f2:wasm-function[653]:0x123731)
-aztec-1     |     at acvm_js::execute::ProgramExecutor<B>::execute_circuit::{{closure}}::hee8c002e0b28ffa8 (wasm://wasm/009399f2:wasm-function[89]:0x60dc9)
-aztec-1     |     at acvm_js::execute::execute_program_with_native_program_and_return::{{closure}}::hd6b43ec46240ad05 (wasm://wasm/009399f2:wasm-function[364]:0xeca50)
-aztec-1     |     at acvm_js::execute::execute_program_with_native_type_return::{{closure}}::h52c71f27836bbfce (wasm://wasm/009399f2:wasm-function[561]:0x1154dc)
-aztec-1     |     at wasm_bindgen_futures::future_to_promise::{{closure}}::{{closure}}::h2e063ef25d237c8d (wasm://wasm/009399f2:wasm-function[295]:0xd781f)
-aztec-1     |     at wasm_bindgen_futures::queue::Queue::new::{{closure}}::hc9750bc69f09fd8d (wasm://wasm/009399f2:wasm-function[729]:0x12df31)
-aztec-1     |     at wasm_bindgen::convert::closures::invoke1_mut::h6c5376bbe1ce2f74 (wasm://wasm/009399f2:wasm-function[2355]:0x180305)
-aztec-1     |     at __wbg_adapter_22 (/usr/src/noir/packages/acvm_js/nodejs/acvm_js.js:220:10)
-aztec-1     |     at real (/usr/src/noir/packages/acvm_js/nodejs/acvm_js.js:205:20) {
-aztec-1     |   callStack: [ '0.1795', '0.7312', '0.16588' ],
-aztec-1     |   rawAssertionPayload: { selector: '10529075911881641908', data: [] },
-aztec-1     |   brilligFunctionId: 0,
-aztec-1     |   headers: { 'Access-Control-Allow-Origin': '*', vary: 'Origin' }
-aztec-1     | }
+[11:21:11.195] WARN: simulator:public_tx_context SETUP phase reverted! 0x27f65a6c49754c60ee89613e4bbedc74a2cf2df9be8796b07372a8a686d448aa:0xd5441b0d failed with reason: Error: No bytecode found at: 0x27f65a6c49754c60ee89613e4bbedc74a2cf2df9be8796b07372a8a686d448aa. Reverting...
+[11:21:11.195] WARN: simulator:public_tx_context Setup phase reverted! The transaction will be thrown out.
+[11:21:11.196] WARN: simulator:public-processor Failed to process tx 0x19a7085fedc85a7c5746d261f083516cfae92c6fd906da5de5e47efa0cb2f990: No bytecode found at: 0x27f65a6c49754c60ee89613e4bbedc74a2cf2df9be8796b07372a8a686d448aa. Reverting... Simulation error: No bytecode found at: 0x27f65a6c49754c60ee89613e4bbedc74a2cf2df9be8796b07372a8a686d448aa. Reverting...
+at 0x27f65a6c49754c60ee89613e4bbedc74a2cf2df9be8796b07372a8a686d448aa.undefined
+[11:21:11.196] INFO: simulator:public-processor Processed 0 successful txs and 1 failed txs in 0.007891416013240815s {"duration":0.007891416013240815,"rate":0,"totalPublicGas":{"daGas":0,"l2Gas":0},"totalBlockGas":{"daGas":0,"l2Gas":0},"totalSizeInBytes":0}
+[11:21:11.196] WARN: node Simulated tx 0x19a7085fedc85a7c5746d261f083516cfae92c6fd906da5de5e47efa0cb2f990 fails: Error: No bytecode found at: 0x27f65a6c49754c60ee89613e4bbedc74a2cf2df9be8796b07372a8a686d448aa. Reverting... {"txHash":"0x19a7085fedc85a7c5746d261f083516cfae92c6fd906da5de5e47efa0cb2f990"}
+[11:21:11.197] WARN: pxe:service Could not find function artifact in contract EcdsaKAccount for function 'undefined' when enriching error callstack
+[11:21:11.198] WARN: cli Error in JSON RPC server call pxe_simulateTx: [Simulation error: No bytecode found at: 0x27f65a6c49754c60ee89613e4bbedc74a2cf2df9be8796b07372a8a686d448aa. Reverting...
+at EcdsaKAccount.undefined] {
+  originalMessage: 'No bytecode found at: 0x27f65a6c49754c60ee89613e4bbedc74a2cf2df9be8796b07372a8a686d448aa. Reverting...',
+  functionErrorStack: [
+    {
+      contractAddress: AztecAddress<0x27f65a6c49754c60ee89613e4bbedc74a2cf2df9be8796b07372a8a686d448aa>,
+      functionName: 'undefined',
+      contractName: 'EcdsaKAccount'
+    }
+  ],
+  revertData: [],
+  noirErrorStack: [],
+  aztecContext: '\n' +
+    'Context:\n' +
+    'TxExecutionRequest(0x0000000000000000000000000000000000000000000000000000000000000004 called 0xea92cc40)\n' +
+    'simulatePublic=true\n' +
+    'msgSender=undefined\n' +
+    'skipTxValidation=true\n' +
+    'profile=false\n' +
+    'scopes=undefined',
+  headers: { 'Access-Control-Allow-Origin': '*', vary: 'Origin' },
+  [cause]: AvmRevertReason [Error]: No bytecode found at: 0x27f65a6c49754c60ee89613e4bbedc74a2cf2df9be8796b07372a8a686d448aa. Reverting...
+      at AvmSimulator.handleFailureToRetrieveBytecode (file:///usr/src/yarn-project/simulator/dest/public/avm/avm_simulator.js:170:30)
+      at async AvmSimulator.execute (file:///usr/src/yarn-project/simulator/dest/public/avm/avm_simulator.js:71:20)
+      at async PublicTxSimulator.simulateEnqueuedCallInternal (file:///usr/src/yarn-project/simulator/dest/public/public_tx_simulator/public_tx_simulator.js:247:31)
+      at async PublicTxSimulator.simulateEnqueuedCall (file:///usr/src/yarn-project/simulator/dest/public/public_tx_simulator/public_tx_simulator.js:218:24)
+      at async PublicTxSimulator.simulatePhase (file:///usr/src/yarn-project/simulator/dest/public/public_tx_simulator/public_tx_simulator.js:186:40)
+      at async PublicTxSimulator.simulateSetupPhase (file:///usr/src/yarn-project/simulator/dest/public/public_tx_simulator/public_tx_simulator.js:122:16)
+      at async PublicTxSimulator.simulate (file:///usr/src/yarn-project/simulator/dest/public/public_tx_simulator/public_tx_simulator.js:63:37)
+      at async PublicProcessor.processTxWithPublicCalls (file:///usr/src/yarn-project/simulator/dest/public/public_processor/public_processor.js:341:91)
+      at async PublicProcessor.processTxWithinDeadline (file:///usr/src/yarn-project/simulator/dest/public/public_processor/public_processor.js:296:20)
+      at async elapsed (file:///usr/src/yarn-project/foundation/dest/timer/elapsed.js:8:20) {
+    failingFunction: {
+      contractAddress: AztecAddress<0x27f65a6c49754c60ee89613e4bbedc74a2cf2df9be8796b07372a8a686d448aa>,
+      functionName: 'undefined',
+      contractName: 'EcdsaKAccount'
+    },
+    noirCallStack: []
+  }
+}
+
 ```

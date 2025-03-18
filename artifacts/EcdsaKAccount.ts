@@ -25,12 +25,12 @@ import {
   type FunctionSelectorLike,
   L1EventPayload,
   loadContractArtifact,
+  loadContractArtifactForPublic,
   type NoirCompiledContract,
   NoteSelector,
   Point,
   type PublicKey,
   PublicKeys,
-  type UnencryptedL2Log,
   type Wallet,
   type U128Like,
   type WrappedFieldLike,
@@ -107,6 +107,13 @@ export class EcdsaKAccountContract extends ContractBase {
   public static get artifact(): ContractArtifact {
     return EcdsaKAccountContractArtifact;
   }
+
+  /**
+   * Returns this contract's artifact with public bytecode.
+   */
+  public static get artifactForPublic(): ContractArtifact {
+    return loadContractArtifactForPublic(EcdsaKAccountContractArtifactJson as NoirCompiledContract);
+  }
   
 
   public static get storage(): ContractStorageLayout<'public_key'> {
@@ -130,17 +137,14 @@ export class EcdsaKAccountContract extends ContractBase {
   /** Type-safe wrappers for the public methods exposed by the contract. */
   public declare methods: {
     
-    /** compute_note_hash_and_optionally_a_nullifier(contract_address: struct, nonce: field, storage_slot: field, note_type_id: field, compute_nullifier: boolean, packed_note_content: array) */
-    compute_note_hash_and_optionally_a_nullifier: ((contract_address: AztecAddressLike, nonce: FieldLike, storage_slot: FieldLike, note_type_id: FieldLike, compute_nullifier: boolean, packed_note_content: FieldLike[]) => ContractFunctionInteraction) & Pick<ContractMethod, 'selector'>;
-
     /** constructor(signing_pub_key_x: array, signing_pub_key_y: array) */
     constructor: ((signing_pub_key_x: (bigint | number)[], signing_pub_key_y: (bigint | number)[]) => ContractFunctionInteraction) & Pick<ContractMethod, 'selector'>;
 
     /** entrypoint(app_payload: struct, fee_payload: struct, cancellable: boolean) */
     entrypoint: ((app_payload: { function_calls: { args_hash: FieldLike, function_selector: FunctionSelectorLike, target_address: AztecAddressLike, is_public: boolean, is_static: boolean }[], nonce: FieldLike }, fee_payload: { function_calls: { args_hash: FieldLike, function_selector: FunctionSelectorLike, target_address: AztecAddressLike, is_public: boolean, is_static: boolean }[], nonce: FieldLike, is_fee_payer: boolean }, cancellable: boolean) => ContractFunctionInteraction) & Pick<ContractMethod, 'selector'>;
 
-    /** process_log(log_plaintext: struct, tx_hash: field, unique_note_hashes_in_tx: struct, first_nullifier_in_tx: field, recipient: struct) */
-    process_log: ((log_plaintext: { storage: FieldLike[], len: (bigint | number) }, tx_hash: FieldLike, unique_note_hashes_in_tx: { storage: FieldLike[], len: (bigint | number) }, first_nullifier_in_tx: FieldLike, recipient: AztecAddressLike) => ContractFunctionInteraction) & Pick<ContractMethod, 'selector'>;
+    /** process_log(log_ciphertext: struct, tx_hash: field, unique_note_hashes_in_tx: struct, first_nullifier_in_tx: field, recipient: struct) */
+    process_log: ((log_ciphertext: { storage: FieldLike[], len: (bigint | number) }, tx_hash: FieldLike, unique_note_hashes_in_tx: { storage: FieldLike[], len: (bigint | number) }, first_nullifier_in_tx: FieldLike, recipient: AztecAddressLike) => ContractFunctionInteraction) & Pick<ContractMethod, 'selector'>;
 
     /** public_dispatch(selector: field) */
     public_dispatch: ((selector: FieldLike) => ContractFunctionInteraction) & Pick<ContractMethod, 'selector'>;
